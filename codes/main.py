@@ -86,12 +86,6 @@ def GetOpenSystem(args):
         op_list[i] = sigma_x
         H_laser += Omega * qt.tensor(op_list)
 
-    H_detuning = 0
-    for i in range(N):
-        op_list = [qt.qeye(2) for _ in range(N)]
-        op_list[i] = sigma_e
-        H_detuning += Delta * qt.tensor(op_list)
-
     # Nearest-neighbor interaction terms 
     H_interaction = 0
     for i in range(N):
@@ -118,7 +112,7 @@ def GetOpenSystem(args):
         op_list[i] = sigma_e
         c_list.append(np.sqrt(gamma) * qt.tensor(op_list))
 
-    return [H_bare, H_laser, H_detuning, H_interaction], c_list
+    return [H_bare, H_laser, H_interaction], c_list
 
 ###############
 
@@ -250,9 +244,9 @@ def TimeDependent_Dynamics(rho0, tf, args, only_final=False):
     tlist = np.linspace(0, tf, 1001)
 
     H, c_list = GetOpenSystem(args)
-    H_bare, H_laser, H_detuning, H_interaction  = H
+    H_bare, H_laser, H_interaction  = H
 
-    H = [H_bare, [H_laser, Interpolation], H_detuning, H_interaction]
+    H = [H_bare, [H_laser, Interpolation], H_interaction]
 
     if only_final==True:
         options.update({"store_final_state":True})
